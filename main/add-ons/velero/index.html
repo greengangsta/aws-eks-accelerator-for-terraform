@@ -1016,6 +1016,31 @@
 <div class="highlight"><pre><span></span><code>enable_velero           = true
 velero_backup_s3_bucket = &quot;&lt;YOUR_BUCKET_NAME&gt;&quot;
 </code></pre></div>
+<p>You can also customize the Helm chart that deploys <code>velero</code> via the following configuration:</p>
+<div class="highlight"><pre><span></span><code>enable_velero           = true
+velero_helm_config = {
+  name        = &quot;velero&quot;
+  description = &quot;A Helm chart for velero&quot;
+  chart       = &quot;velero&quot;
+  version     = &quot;2.29.8&quot;
+  repository  = &quot;https://vmware-tanzu.github.io/helm-charts/&quot;
+  namespace   = &quot;velero&quot;
+  values = [templatefile(&quot;${path.module}/values.yaml&quot;, {
+    backup_s3_bucket = &quot;&lt;YOUR_BUCKET_NAME&gt;&quot;,
+  })]
+
+  set_values = [
+    {
+      name  = &quot;serviceAccount.server.name&quot;
+      value = local.name
+    },
+    {
+      name  = &quot;serviceAccount.server.create&quot;
+      value = false
+    }
+  ]
+}
+</code></pre></div>
 <p>To see a working example, see the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/examples/stateful"><code>stateful</code></a> example blueprint.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <ol>
